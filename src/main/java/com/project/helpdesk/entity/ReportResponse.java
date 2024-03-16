@@ -17,10 +17,6 @@ public class ReportResponse {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne
-    @Column(name = "user_id")
-    private User user;
-
     @Column(name = "report_title")
     private String title;
 

@@ -1,6 +1,5 @@
 package com.project.helpdesk.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.helpdesk.constant.TableName;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +20,7 @@ public class User {
     private String name;
 
     @Column(name = "mobile_phone")
-    private String mobilePhoneNo;
+    private String mobilePhone;
 
     @Column(name = "company_division")
     private String division;

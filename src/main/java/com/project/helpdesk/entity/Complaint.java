@@ -21,7 +21,7 @@ public class Complaint {
     private String id;
 
     @ManyToOne
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "report_title")
