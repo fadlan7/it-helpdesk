@@ -1,6 +1,8 @@
 package com.project.helpdesk.repository;
 
+import com.project.helpdesk.dto.response.UserResponse;
 import com.project.helpdesk.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -28,4 +30,7 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     @Query(value = "DELETE FROM m_user WHERE id = :id", nativeQuery = true)
     @Transactional
     void deleteUser(String id);
+
+    @Query(value = "SELECT * FROM m_user", nativeQuery = true)
+    Page<UserResponse> getAllUsers();
 }

@@ -50,4 +50,29 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<CommonResponse<User>> getUserById(@PathVariable String id) {
+        User customer = userService.getUserById(id);
+
+        CommonResponse<User> response = CommonResponse.<User>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_GET_DATA)
+                .data(customer)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id) {
+        userService.deleteUser(id);
+
+        CommonResponse<String> response = CommonResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_DELETE_DATA)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 }
