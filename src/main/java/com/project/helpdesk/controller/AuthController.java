@@ -38,4 +38,18 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping(path = "/register-technician",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<?>> registerTechnician(@RequestBody AuthRequest request) {
+        RegisterResponse register = authService.registerTechnician(request);
+        CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message(ResponseMessage.SUCCESS_SAVE_DATA)
+                .data(register)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 }

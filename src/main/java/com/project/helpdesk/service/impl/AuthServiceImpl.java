@@ -94,37 +94,81 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public RegisterResponse register(AuthRequest request) {
-        try {
-            Role role = roleService.getRoleName(UserRole.ROLE_EMPLOYEE.name());
-            String hashPassword = passwordEncoder.encode(request.getPassword());
-            UUID generatedId = UUID.randomUUID();
 
-            UserAccount account = UserAccount.builder()
-                    .username(request.getUsername())
-                    .password(hashPassword)
-                    .role(List.of(role))
-                    .isEnable(true)
-                    .build();
+        Role role = roleService.getRoleName(UserRole.ROLE_EMPLOYEE.name());
+        String hashPassword = passwordEncoder.encode(request.getPassword());
+        UUID generatedId = UUID.randomUUID();
 
-            userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
+        UserAccount account = UserAccount.builder()
+                .username(request.getUsername())
+                .password(hashPassword)
+                .role(List.of(role))
+                .isEnable(true)
+                .build();
 
-            Employee employee = Employee.builder()
-                    .userAccount(account)
-                    .build();
-            employeeService.createEmployee(employee.getId());
+        userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
 
-            roleService.createUserRoleRelation(generatedId.toString(), role.getId());
+        Employee employee = Employee.builder()
+                .userAccount(account)
+                .build();
+        employeeService.createEmployee(employee.getId());
 
-            List<String> roles = account.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority).toList();
+        roleService.createUserRoleRelation(generatedId.toString(), role.getId());
 
-            return RegisterResponse.builder()
-                    .username(account.getUsername())
-                    .roles(roles)
-                    .build();
-        } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException(e.getMessage());
+        List<String> roles = account.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).toList();
+
+        return RegisterResponse.builder()
+                .username(account.getUsername())
+                .roles(roles)
+                .build();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public RegisterResponse registerTechnician(AuthRequest request) {
+
+        String hashPassword = passwordEncoder.encode(request.getPassword());
+        UUID generatedId = UUID.randomUUID();
+
+        UserAccount account = UserAccount.builder()
+                .username(request.getUsername())
+                .password(hashPassword)
+                .role(List.of(
+                        roleService.getRoleName(UserRole.ROLE_TECHNICIAN.name()),
+                        roleService.getRoleName(UserRole.ROLE_EMPLOYEE.name())
+                ))
+                .isEnable(true)
+                .build();
+
+        userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
+
+        Employee employee = Employee.builder()
+                .userAccount(account)
+                .build();
+        employeeService.createEmployee(employee.getId());
+
+
+        final String userId = generatedId.toString();
+
+        List<String> roleNames = List.of(
+                UserRole.ROLE_TECHNICIAN.name(),
+                UserRole.ROLE_EMPLOYEE.name()
+        );
+
+        for (String roleName : roleNames) {
+            Role role = roleService.getRoleName(roleName);
+            if (role != null) {
+                roleService.createUserRoleRelation(userId, role.getId());
+            }
         }
 
+        List<String> roles = account.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).toList();
+
+        return RegisterResponse.builder()
+                .username(account.getUsername())
+                .roles(roles)
+                .build();
     }
 }
