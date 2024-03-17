@@ -1,7 +1,6 @@
 package com.project.helpdesk.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.helpdesk.constant.TableName;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,8 +20,8 @@ public class Complaint {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @Column(name = "report_title")
     private String title;

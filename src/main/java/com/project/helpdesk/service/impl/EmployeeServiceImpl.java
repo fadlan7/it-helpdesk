@@ -2,8 +2,10 @@ package com.project.helpdesk.service.impl;
 
 import com.project.helpdesk.constant.ResponseMessage;
 import com.project.helpdesk.dto.request.SearchEmployeeRequest;
+import com.project.helpdesk.dto.request.UpdateEmployeeRequest;
 import com.project.helpdesk.dto.response.EmployeeResponse;
 import com.project.helpdesk.entity.Employee;
+import com.project.helpdesk.entity.UserAccount;
 import com.project.helpdesk.repository.EmployeeRepository;
 import com.project.helpdesk.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -21,27 +23,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    @Transactional(rollbackFor = Exception.class)
+     @Transactional(rollbackFor = Exception.class)
     @Override
-    public EmployeeResponse createEmployee(String name, String mobilePhoneNo, String division) {
+    public EmployeeResponse createEmployee(String userAccountId) {
         UUID generatedId = UUID.randomUUID();
-        employeeRepository.createEmployee(generatedId.toString(), name, mobilePhoneNo, division);
+        employeeRepository.createEmployee(generatedId.toString(), userAccountId);
 
-        Employee newEmployee = new Employee();
-        newEmployee.setId(generatedId.toString());
-        newEmployee.setName(name);
-        newEmployee.setMobilePhone(mobilePhoneNo);
-        newEmployee.setDivision(division);
+        Employee newEmployee = Employee.builder()
+                .id(generatedId.toString())
+                .userAccount(UserAccount.builder().id(userAccountId).build())
+                .build();
 
         return convertEmployeeToEmployeeResponse(newEmployee);
     }
 
+
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public EmployeeResponse updateEmployee(String id, String name, String mobilePhoneNo, String division) {
-        findByIdOrThrowNotFound(id);
+    public EmployeeResponse updateEmployee(UpdateEmployeeRequest request) {
+        findByIdOrThrowNotFound(request.getId());
 
-        employeeRepository.updateEmployee(id, name, mobilePhoneNo, division);
+        employeeRepository.updateEmployee(request.getId(), request.getName(), request.getMobilePhone(), request.getDivision());
 
         return null;
     }
@@ -76,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .name(newEmployee.getName())
                 .mobilePhone(newEmployee.getMobilePhone())
                 .division(newEmployee.getDivision())
-//                .userAccountId(newEmployee.getEmployeeAccount().getId() == null ? null : "-")
+                .userAccountId(newEmployee.getUserAccount().getId())
                 .build();
     }
 }

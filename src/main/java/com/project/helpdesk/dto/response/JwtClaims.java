@@ -2,16 +2,14 @@ package com.project.helpdesk.dto.response;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EmployeeResponse {
-
-    private String id;
-    private String name;
-    private String mobilePhone;
-    private String division;
+public class JwtClaims {
     private String userAccountId;
+    private List<String> roles;
 }

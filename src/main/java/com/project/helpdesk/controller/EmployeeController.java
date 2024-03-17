@@ -22,18 +22,18 @@ public class EmployeeController {
     @PostMapping
     public ResponseEntity<CommonResponse<EmployeeResponse>> createNewEmployee(@RequestBody NewEmployeeRequest request) {
 
-        EmployeeResponse newProduct = employeeService.createEmployee(request.getName(), request.getMobilePhone(), request.getDivision());
+        EmployeeResponse newEmployee = employeeService.createEmployee(request.getId());
         CommonResponse<EmployeeResponse> response = CommonResponse.<EmployeeResponse>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .message(ResponseMessage.SUCCESS_SAVE_DATA)
-                .data(newProduct)
+                .data(newEmployee)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping
     public ResponseEntity<CommonResponse<EmployeeResponse>> updateCustomer(@RequestBody UpdateEmployeeRequest request) {
-        EmployeeResponse updatedEmployee = employeeService.updateEmployee(request.getId(), request.getName(), request.getMobilePhone(), request.getDivision());
+        EmployeeResponse updatedEmployee = employeeService.updateEmployee(request);
 
         CommonResponse<EmployeeResponse> response = CommonResponse.<EmployeeResponse>builder()
                 .statusCode(HttpStatus.OK.value())

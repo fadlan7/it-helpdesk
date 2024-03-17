@@ -13,24 +13,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, String>, JpaSpecificationExecutor<Employee> {
 
-    @Modifying
-    @Query(value = "INSERT INTO m_user(id, name, mobile_phone, company_division) VALUES (:id, :name, :mobilePhoneNo, :division)", nativeQuery = true)
-    @Transactional
-    void createEmployee(String id, String name, String mobilePhoneNo, String division);
+//    @Modifying
+//    @Query(value = "INSERT INTO m_employee(id, name, mobile_phone, company_division) VALUES (:id, :name, :mobilePhoneNo, :division)", nativeQuery = true)
+//    @Transactional
+//    void createEmployee(String id, String name, String mobilePhoneNo, String division);
 
-    @Modifying
-    @Query(value = "UPDATE m_user SET name = :name, mobile_phone = :mobilePhoneNo, company_division = :division WHERE id = :id", nativeQuery = true)
     @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO m_employee(id, user_account_id) VALUES (:id, :userAccountId)", nativeQuery = true)
+    void createEmployee(String id, String userAccountId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE m_employee SET name = :name, mobile_phone = :mobilePhoneNo, company_division = :division WHERE id = :id", nativeQuery = true)
     void updateEmployee(String id, String name, String mobilePhoneNo, String division);
 
-    @Query(value = "SELECT * FROM m_user WHERE id = :id", nativeQuery = true)
+    @Query(value = "SELECT * FROM m_employee WHERE id = :id", nativeQuery = true)
     Employee getEmployeeById(String id);
 
-    @Modifying
-    @Query(value = "DELETE FROM m_user WHERE id = :id", nativeQuery = true)
+
     @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM m_employee WHERE id = :id", nativeQuery = true)
     void deleteEmployee(String id);
 
-//    @Query(value = "SELECT * FROM m_user", nativeQuery = true)
+//    @Query(value = "SELECT * FROM m_employee", nativeQuery = true)
 //    Page<EmployeeResponse> getAllEmployees();
 }
