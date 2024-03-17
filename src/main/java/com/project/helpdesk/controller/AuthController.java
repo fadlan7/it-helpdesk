@@ -4,6 +4,7 @@ import com.project.helpdesk.constant.ApiUrl;
 import com.project.helpdesk.constant.ResponseMessage;
 import com.project.helpdesk.dto.request.AuthRequest;
 import com.project.helpdesk.dto.response.CommonResponse;
+import com.project.helpdesk.dto.response.LoginResponse;
 import com.project.helpdesk.dto.response.RegisterResponse;
 import com.project.helpdesk.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,8 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     @PostMapping(path = "/register-technician",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -51,5 +54,20 @@ public class AuthController {
                 .data(register)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping(path = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<?>> login(@RequestBody AuthRequest request) {
+        LoginResponse loginResponse = authService.login(request);
+        CommonResponse<LoginResponse> response = CommonResponse.<LoginResponse>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_LOGIN)
+                .data(loginResponse)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

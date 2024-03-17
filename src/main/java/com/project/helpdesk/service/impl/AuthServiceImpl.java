@@ -2,6 +2,7 @@ package com.project.helpdesk.service.impl;
 
 import com.project.helpdesk.constant.UserRole;
 import com.project.helpdesk.dto.request.AuthRequest;
+import com.project.helpdesk.dto.response.LoginResponse;
 import com.project.helpdesk.dto.response.RegisterResponse;
 import com.project.helpdesk.entity.Employee;
 import com.project.helpdesk.entity.Role;
@@ -15,8 +16,9 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -169,6 +171,26 @@ public class AuthServiceImpl implements AuthService {
         return RegisterResponse.builder()
                 .username(account.getUsername())
                 .roles(roles)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public LoginResponse login(AuthRequest request) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                request.getUsername(),
+                request.getPassword()
+        );
+
+        Authentication authenticate = authenticationManager.authenticate(authentication);
+        UserAccount userAccount = (UserAccount) authenticate.getPrincipal();
+
+        String token = jwtService.generateToken(userAccount);
+
+        return LoginResponse.builder()
+                .username(userAccount.getUsername())
+                .roles(userAccount.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .token(token)
                 .build();
     }
 }

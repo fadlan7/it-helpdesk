@@ -22,10 +22,9 @@ import java.time.Instant;
 @Service
 @Slf4j
 public class JwtServiceImpl implements JwtService {
-     private final String JWT_SECRET;
+    private final String JWT_SECRET;
     private final String ISSUER;
     private final long JWT_EXPIRATION;
-
 
     public JwtServiceImpl(
             @Value("${it_helpdesk.jwt.secret_key}") String jwtSecret,
