@@ -2,12 +2,12 @@ package com.project.helpdesk.controller;
 
 import com.project.helpdesk.constant.ApiUrl;
 import com.project.helpdesk.constant.ResponseMessage;
-import com.project.helpdesk.dto.request.NewUserRequest;
-import com.project.helpdesk.dto.request.UpdateUserRequest;
+import com.project.helpdesk.dto.request.NewEmployeeRequest;
+import com.project.helpdesk.dto.request.UpdateEmployeeRequest;
 import com.project.helpdesk.dto.response.CommonResponse;
-import com.project.helpdesk.dto.response.UserResponse;
-import com.project.helpdesk.entity.User;
-import com.project.helpdesk.service.UserService;
+import com.project.helpdesk.dto.response.EmployeeResponse;
+import com.project.helpdesk.entity.Employee;
+import com.project.helpdesk.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,20 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = ApiUrl.USER_URL)
-public class UserController {
-    private final UserService userService;
-
-//    @PostMapping
-//    public void createUser(String name, String mobilePhoneNo, String division) {
-//        userService.createUser(name, mobilePhoneNo, division);
-//    }
+@RequestMapping(path = ApiUrl.Employee_URL)
+public class EmployeeController {
+    private final EmployeeService employeeService;
 
     @PostMapping
-    public ResponseEntity<CommonResponse<UserResponse>> createNewUser(@RequestBody NewUserRequest request) {
+    public ResponseEntity<CommonResponse<EmployeeResponse>> createNewEmployee(@RequestBody NewEmployeeRequest request) {
 
-        UserResponse newProduct = userService.createUser(request.getName(), request.getMobilePhone(), request.getDivision());
-        CommonResponse<UserResponse> response = CommonResponse.<UserResponse>builder()
+        EmployeeResponse newProduct = employeeService.createEmployee(request.getName(), request.getMobilePhone(), request.getDivision());
+        CommonResponse<EmployeeResponse> response = CommonResponse.<EmployeeResponse>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .message(ResponseMessage.SUCCESS_SAVE_DATA)
                 .data(newProduct)
@@ -37,13 +32,13 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<CommonResponse<UserResponse>> updateCustomer(@RequestBody UpdateUserRequest request) {
-        UserResponse updatedUser = userService.updateUser(request.getId(), request.getName(), request.getMobilePhone(), request.getDivision());
+    public ResponseEntity<CommonResponse<EmployeeResponse>> updateCustomer(@RequestBody UpdateEmployeeRequest request) {
+        EmployeeResponse updatedEmployee = employeeService.updateEmployee(request.getId(), request.getName(), request.getMobilePhone(), request.getDivision());
 
-        CommonResponse<UserResponse> response = CommonResponse.<UserResponse>builder()
+        CommonResponse<EmployeeResponse> response = CommonResponse.<EmployeeResponse>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(ResponseMessage.SUCCESS_UPDATE_DATA)
-                .data(updatedUser)
+                .data(updatedEmployee)
                 .build();
 
         return ResponseEntity
@@ -52,10 +47,10 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CommonResponse<User>> getUserById(@PathVariable String id) {
-        User customer = userService.getUserById(id);
+    public ResponseEntity<CommonResponse<Employee>> getEmployeeById(@PathVariable String id) {
+        Employee customer = employeeService.getEmployeeById(id);
 
-        CommonResponse<User> response = CommonResponse.<User>builder()
+        CommonResponse<Employee> response = CommonResponse.<Employee>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(ResponseMessage.SUCCESS_GET_DATA)
                 .data(customer)
@@ -66,7 +61,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id) {
-        userService.deleteUser(id);
+        employeeService.deleteEmployee(id);
 
         CommonResponse<String> response = CommonResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())

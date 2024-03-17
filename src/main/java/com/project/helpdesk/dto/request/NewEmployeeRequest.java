@@ -1,4 +1,4 @@
-package com.project.helpdesk.dto.response;
+package com.project.helpdesk.dto.request;
 
 import lombok.*;
 
@@ -7,11 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
-
+public class NewEmployeeRequest {
     private String id;
+
     private String name;
+
     private String mobilePhone;
+
     private String division;
-//    private String userAccountId;
 }

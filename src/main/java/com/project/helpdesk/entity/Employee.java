@@ -10,8 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = TableName.USER)
-public class User {
+@Table(name = TableName.EMPLOYEE)
+public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
