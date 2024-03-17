@@ -23,20 +23,24 @@ public class Complaint {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @Column(name = "report_title")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "complaint_date", updatable = false)
+    private Date ComplaintDate;
+
+    @Column(name = "complaint_title")
     private String title;
 
-    @Column(name = "report_description", columnDefinition = "TEXT")
+    @Column(name = "complaint_description", columnDefinition = "TEXT")
     private String description;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "report_date", updatable = false)
-    private Date reportDate;
+    @OneToOne
+    @JoinColumn(name = "image_id", unique = true)
+    private Image complaintImage;
 
-    @Column(name = "report_status")
+    @Column(name = "complaint_status")
     private String status;
 
     @OneToOne
     @JoinColumn(name = "response_id", unique = true)
-    private ReportResponse response;
+    private ComplaintReply reply;
 }

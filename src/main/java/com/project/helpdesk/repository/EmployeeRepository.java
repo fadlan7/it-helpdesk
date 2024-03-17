@@ -35,4 +35,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 
     @Query(value = "SELECT * FROM m_employee", countQuery = "SELECT COUNT(*) FROM m_employee" , nativeQuery = true)
     Page<Employee> getAllEmployees(Pageable pageable);
+
+    @Query(value = "SELECT * FROM m_employee WHERE user_account_id = :userAccountId", nativeQuery = true)
+    Employee getEmployeeByUserAccountId(String userAccountId);
 }

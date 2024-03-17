@@ -16,6 +16,8 @@ public interface EmployeeService {
 
     Employee getEmployeeById(String id);
 
+    Employee getEmployeeByUserAccountId(String userAccountId);
+
     void deleteEmployee(String id);
 
     Page<GetEmployeeResponse> getAllEmployees(SearchEmployeeRequest request);

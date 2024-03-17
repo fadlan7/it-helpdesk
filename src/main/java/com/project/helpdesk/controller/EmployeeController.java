@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = ApiUrl.Employee_URL)
+@RequestMapping(path = ApiUrl.EMPLOYEE_URL)
 public class EmployeeController {
     private final EmployeeService employeeService;
 

@@ -1,9 +1,10 @@
 package com.project.helpdesk.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.helpdesk.constant.TableName;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -12,17 +13,21 @@ import lombok.*;
 @Entity
 @Builder
 @Table(name = TableName.RESPONSE)
-public class ReportResponse {
+public class ComplaintReply {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "report_title")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "reply_date", updatable = false)
+    private Date replyDate;
+
+    @Column(name = "reply_title")
     private String title;
 
-    @Column(name = "report_description", columnDefinition = "TEXT")
+    @Column(name = "reply_description", columnDefinition = "TEXT")
     private String description;
 
-    @OneToOne(mappedBy = "response")
+    @OneToOne(mappedBy = "reply")
     private Complaint complaint;
 }

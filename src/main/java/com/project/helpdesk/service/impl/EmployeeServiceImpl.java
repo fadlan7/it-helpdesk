@@ -59,6 +59,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee getEmployeeByUserAccountId(String userAccountId) {
+        return employeeRepository.getEmployeeByUserAccountId(userAccountId);
+    }
+
+    @Override
     public void deleteEmployee(String id) {
         findByIdOrThrowNotFound(id);
         employeeRepository.deleteEmployee(id);
