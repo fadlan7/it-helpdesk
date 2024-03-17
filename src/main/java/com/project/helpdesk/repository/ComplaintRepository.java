@@ -34,4 +34,9 @@ public interface ComplaintRepository extends JpaRepository<Complaint, String> {
     @Modifying
     @Query(value = "DELETE FROM m_complaint WHERE id = :id", nativeQuery = true)
     void deleteComplaint(String id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE m_complaint SET complaint_status = :status WHERE id = :id", nativeQuery = true)
+    void updateComplaintStatus(String id, String status);
 }

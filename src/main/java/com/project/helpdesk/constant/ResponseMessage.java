@@ -15,6 +15,7 @@ public class ResponseMessage {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String USERNAME_NOT_FOUND = "Username not found";
     public static final String ERROR_COMPLAINT_CANNOT_BE_EDITED = "Complaints cannot be edited";
+    public static final String ERROR_COMPLAINT_CANNOT_BE_DELETED = "Complaints cannot be deleted";
 }
 
 

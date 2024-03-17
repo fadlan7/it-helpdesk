@@ -83,6 +83,45 @@ public class ComplaintServiceImpl implements ComplaintService {
         return convertComplaintToComplaintResponse(currentComplaint);
     }
 
+    @Override
+    public void deleteComplaint(String id) {
+        Complaint currentComplaint = findByIdOrThrowNotFound(id);
+        String imageId = currentComplaint.getComplaintImage().getId();
+
+        if (!currentComplaint.getStatus().equals(ComplaintStatus.IN_QUEUE.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ResponseMessage.ERROR_COMPLAINT_CANNOT_BE_DELETED);
+        }
+
+        complaintRepository.deleteComplaint(id);
+        imageService.deleteById(imageId);
+    }
+
+    @Override
+    public void updateComplaintStatus(String id, Integer status) {
+        findByIdOrThrowNotFound(id);
+
+        String complaintStatus = null;
+
+        switch (status) {
+            case 0:
+                complaintStatus = ComplaintStatus.IN_QUEUE.name();
+                break;
+            case 1:
+                complaintStatus = ComplaintStatus.IN_PROGRESS.name();
+                break;
+            case 2:
+                complaintStatus = ComplaintStatus.COMPLETED.name();
+                break;
+            case 3:
+                complaintStatus = ComplaintStatus.CANCELLED.name();
+                break;
+            default:
+                break;
+        }
+
+        complaintRepository.updateComplaintStatus(id, complaintStatus);
+    }
+
 
     private Complaint findByIdOrThrowNotFound(String id) {
         return complaintRepository.getComplaintById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseMessage.ERROR_NOT_FOUND));

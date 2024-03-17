@@ -85,4 +85,31 @@ public class ComplaintController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id) {
+        complaintService.deleteComplaint(id);
+
+        CommonResponse<String> response = CommonResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_DELETE_DATA)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','TECHNICIAN')")
+    @PatchMapping("/{id}")
+    public ResponseEntity<CommonResponse<String>> updateComplaintStatus(
+            @PathVariable(name = "id") String id,
+            @RequestParam(name = "status") Integer status) {
+        complaintService.updateComplaintStatus(id, status);
+
+        CommonResponse<String> response = CommonResponse.<String>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_UPDATE_DATA)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
 }
