@@ -8,7 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NewComplaintRequest {
+public class UpdateComplaintRequest {
+    private String id;
     private String title;
     private String description;
     private MultipartFile complaintImage;
