@@ -12,8 +12,8 @@ public class SearchEmployeeRequest {
     private Integer size;
     private String sortBy;
     private String direction;
-    private String name;
-    private String mobilePhoneNo;
-    private Boolean isMember;
+//    private String name;
+//    private String mobilePhoneNo;
+//    private Boolean isMember;
 }
 

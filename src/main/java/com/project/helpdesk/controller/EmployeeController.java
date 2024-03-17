@@ -3,15 +3,22 @@ package com.project.helpdesk.controller;
 import com.project.helpdesk.constant.ApiUrl;
 import com.project.helpdesk.constant.ResponseMessage;
 import com.project.helpdesk.dto.request.NewEmployeeRequest;
+import com.project.helpdesk.dto.request.SearchEmployeeRequest;
 import com.project.helpdesk.dto.request.UpdateEmployeeRequest;
 import com.project.helpdesk.dto.response.CommonResponse;
 import com.project.helpdesk.dto.response.EmployeeResponse;
+import com.project.helpdesk.dto.response.GetEmployeeResponse;
+import com.project.helpdesk.dto.response.PagingResponse;
 import com.project.helpdesk.entity.Employee;
 import com.project.helpdesk.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,6 +61,41 @@ public class EmployeeController {
                 .statusCode(HttpStatus.OK.value())
                 .message(ResponseMessage.SUCCESS_GET_DATA)
                 .data(customer)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<GetEmployeeResponse>>> getAllCustomer(
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "sortBy", defaultValue = "name") String sortBy,
+            @RequestParam(name = "direction", defaultValue = "asc") String direction
+    ) {
+        SearchEmployeeRequest request = SearchEmployeeRequest.builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .direction(direction)
+                .build();
+        Page<GetEmployeeResponse> customers = employeeService.getAllEmployees(request);
+
+        PagingResponse pagingResponse = PagingResponse.builder()
+                .totalPages(customers.getTotalPages())
+                .totalElement(customers.getTotalElements())
+                .page(customers.getPageable().getPageNumber() + 1)
+                .size(customers.getPageable().getPageSize())
+                .hasNext(customers.hasNext())
+                .hasPrevious(customers.hasPrevious())
+                .build();
+
+        CommonResponse<List<GetEmployeeResponse>> response = CommonResponse.<List<GetEmployeeResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_GET_DATA)
+                .data(customers.getContent())
+                .paging(pagingResponse)
                 .build();
 
         return ResponseEntity.ok(response);

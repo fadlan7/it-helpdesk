@@ -76,6 +76,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
+        employeeService.createEmployee(generatedId.toString());
 
         final String userId = generatedId.toString();
 
@@ -110,10 +111,7 @@ public class AuthServiceImpl implements AuthService {
 
         userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
 
-        Employee employee = Employee.builder()
-                .userAccount(account)
-                .build();
-        employeeService.createEmployee(employee.getId());
+        employeeService.createEmployee(generatedId.toString());
 
         roleService.createUserRoleRelation(generatedId.toString(), role.getId());
 
@@ -145,11 +143,7 @@ public class AuthServiceImpl implements AuthService {
 
         userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
 
-        Employee employee = Employee.builder()
-                .userAccount(account)
-                .build();
-        employeeService.createEmployee(employee.getId());
-
+        employeeService.createEmployee(generatedId.toString());
 
         final String userId = generatedId.toString();
 
