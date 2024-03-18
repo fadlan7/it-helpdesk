@@ -8,5 +8,4 @@ import com.project.helpdesk.dto.response.ComplaintReplyDtoResponse;
 public interface ComplaintReplyService {
     ComplaintReplyDtoResponse createComplaintReply(NewComplaintReplyDtoRequest request);
     ComplaintReplyDtoResponse updateComplaintReply(UpdateComplaintReplyDtoRequest request);
-    void deleteComplaintReply(String id);
 }

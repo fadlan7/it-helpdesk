@@ -71,11 +71,6 @@ public class ComplaintReplyServiceImpl implements ComplaintReplyService {
         return response;
     }
 
-    @Override
-    public void deleteComplaintReply(String id) {
-
-    }
-
     private ComplaintReply findByIdOrThrowNotFound(String id) {
         return complaintReplyRepository.getComplaintReplyById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseMessage.ERROR_NOT_FOUND));
     }

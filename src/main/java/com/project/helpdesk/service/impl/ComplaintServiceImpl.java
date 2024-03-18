@@ -52,7 +52,21 @@ public class ComplaintServiceImpl implements ComplaintService {
             complaintRepository.createComplaint(generateComplaintId.toString(), request.getTitle(), request.getDescription(), new Date(), complaintStatus, currentEmployee.getId(), null);
         }
 
-        return null;
+        Complaint newComplaint = Complaint.builder()
+                .id(generateComplaintId.toString())
+                .employee(currentEmployee)
+                .ComplaintDate(new Date())
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .complaintImage(Image.builder()
+                        .name(request.getComplaintImage().getOriginalFilename())
+                        .path(ApiUrl.COMPLAINT_IMAGE_DOWNLOAD_API + generateImageId)
+                        .size(request.getComplaintImage().getSize())
+                        .contentType(request.getComplaintImage().getContentType())
+                        .build())
+                .build();
+
+        return convertComplaintToComplaintResponse(newComplaint);
     }
 
     @Transactional(rollbackFor = Exception.class)
