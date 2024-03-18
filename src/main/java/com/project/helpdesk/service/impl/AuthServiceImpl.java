@@ -16,6 +16,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,14 +61,11 @@ public class AuthServiceImpl implements AuthService {
                 roleService.createRole(generatedId.toString(), roleName);
             }
         }
-    }
 
-    @Transactional(rollbackFor = Exception.class)
-    @PostConstruct
-    public void initSuperAdmin() {
+        //  INIT SUPER ADMIN
         Optional<UserAccount> currentUser = userAccountRepository.findByUsername(superAdminUsername);
         if (currentUser.isPresent()) return;
-        UUID generatedId = UUID.randomUUID();
+        UUID userAccountId = UUID.randomUUID();
 
         UserAccount account = UserAccount.builder()
                 .username(superAdminUsername)
@@ -75,23 +73,26 @@ public class AuthServiceImpl implements AuthService {
                 .isEnable(true)
                 .build();
 
-        userAccountRepository.createUserAccount(generatedId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
-        employeeService.createEmployee(generatedId.toString());
+        log.info("user account id create user acc : " + userAccountId);
+        userAccountRepository.createUserAccount(userAccountId.toString(), account.getUsername(), account.getPassword(), account.getIsEnable());
 
-        final String userId = generatedId.toString();
+        final String userId = userAccountId.toString();
 
-        List<String> roleNames = List.of(
+        List<String> superAdminRoleNames = List.of(
                 UserRole.ROLE_SUPER_ADMIN.name(),
                 UserRole.ROLE_TECHNICIAN.name(),
                 UserRole.ROLE_EMPLOYEE.name()
         );
 
-        for (String roleName : roleNames) {
+        for (String roleName : superAdminRoleNames) {
             Role role = roleService.getRoleName(roleName);
+            log.info("user account id create role: " + userAccountId);
             if (role != null) {
+                account.setRole(List.of(role));
                 roleService.createUserRoleRelation(userId, role.getId());
             }
         }
+        employeeService.createEmployee(userId);
     }
 
     @Transactional(rollbackFor = Exception.class)
