@@ -28,6 +28,12 @@ public class ComplaintReply {
     @Column(name = "reply_description", columnDefinition = "TEXT")
     private String description;
 
-    @OneToOne(mappedBy = "reply")
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    //    @OneToOne(mappedBy = "reply")
+    @OneToOne
+    @JoinColumn(name = "complaint_id", referencedColumnName = "id")
     private Complaint complaint;
 }

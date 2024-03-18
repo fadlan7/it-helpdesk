@@ -1,6 +1,8 @@
 package com.project.helpdesk.repository;
 
 import com.project.helpdesk.entity.Complaint;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -39,4 +41,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, String> {
     @Modifying
     @Query(value = "UPDATE m_complaint SET complaint_status = :status WHERE id = :id", nativeQuery = true)
     void updateComplaintStatus(String id, String status);
+
+    @Query(value = "SELECT * FROM m_complaint", countQuery = "SELECT COUNT(*) FROM m_complaint" , nativeQuery = true)
+    Page<Complaint> getAllComplaints(Pageable pageable);
 }

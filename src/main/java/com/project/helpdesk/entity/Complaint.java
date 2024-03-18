@@ -40,7 +40,8 @@ public class Complaint {
     @Column(name = "complaint_status")
     private String status;
 
-    @OneToOne
-    @JoinColumn(name = "response_id", unique = true)
+//    @OneToOne
+//    @JoinColumn(name = "response_id", unique = true)
+    @OneToOne(mappedBy = "complaint", cascade = CascadeType.ALL)
     private ComplaintReply reply;
 }
