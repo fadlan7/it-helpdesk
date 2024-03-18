@@ -6,10 +6,7 @@ import com.project.helpdesk.constant.ResponseMessage;
 import com.project.helpdesk.dto.request.NewComplaintRequest;
 import com.project.helpdesk.dto.request.SearchComplaintRequest;
 import com.project.helpdesk.dto.request.UpdateComplaintRequest;
-import com.project.helpdesk.dto.response.ComplaintDtoResponse;
-import com.project.helpdesk.dto.response.EmployeeResponse;
-import com.project.helpdesk.dto.response.ImageResponse;
-import com.project.helpdesk.dto.response.UserAccountResponse;
+import com.project.helpdesk.dto.response.*;
 import com.project.helpdesk.entity.Complaint;
 import com.project.helpdesk.entity.Employee;
 import com.project.helpdesk.entity.Image;
@@ -19,10 +16,7 @@ import com.project.helpdesk.service.ComplaintService;
 import com.project.helpdesk.service.EmployeeService;
 import com.project.helpdesk.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,19 +134,49 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public Page<ComplaintDtoResponse> getAllComplaints(SearchComplaintRequest request) {
-//        if (request.getPage() <= 0) request.setPage(1);
-//
-//        Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
-//        Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
-//
-//        Page<Complaint> complaints = complaintRepository.getAllComplaints(pageable);
-//
-//        List<ComplaintDtoResponse> complaintResponses = complaints.getContent().stream().map(complaint -> {
-//
-//        })
+    public Page<GetComplaintDtoResponse> getAllComplaints(SearchComplaintRequest request) {
+        if (request.getPage() <= 0) request.setPage(1);
 
-        return null;
+        Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
+        Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
+
+        Page<Complaint> complaints = complaintRepository.getAllComplaints(pageable);
+
+
+        List<GetComplaintDtoResponse> complaintResponses = complaints.getContent().stream().map(complaint -> {
+            GetComplaintReplyDtoResponse response =
+                    Optional.ofNullable(complaint.getReply())
+                            .map(reply -> GetComplaintReplyDtoResponse.builder()
+                                    .id(reply.getId())
+                                    .technician(SearchEmployeeResponse.builder()
+                                            .id(reply.getEmployee().getId())
+                                            .name(reply.getEmployee().getName())
+                                            .build())
+                                    .replyDate(reply.getReplyDate())
+                                    .title(reply.getTitle())
+                                    .description(reply.getDescription())
+                                    .build())
+                            .orElse(null);
+
+            return GetComplaintDtoResponse.builder()
+                    .id(complaint.getId())
+                    .employee(SearchEmployeeResponse.builder()
+                            .id(complaint.getEmployee().getId())
+                            .name(complaint.getEmployee().getName())
+                            .build())
+                    .complaintDate(complaint.getComplaintDate())
+                    .title(complaint.getTitle())
+                    .description(complaint.getDescription())
+                    .complaintImage(ImageResponse.builder()
+                            .name(complaint.getComplaintImage().getName())
+                            .url(ApiUrl.COMPLAINT_IMAGE_DOWNLOAD_API + complaint.getComplaintImage().getId())
+                            .build())
+                    .status(complaint.getStatus())
+                    .complaintReply(response)
+                    .build();
+        }).toList();
+
+        return new PageImpl<>(complaintResponses, pageable, complaints.getTotalElements());
     }
 
 

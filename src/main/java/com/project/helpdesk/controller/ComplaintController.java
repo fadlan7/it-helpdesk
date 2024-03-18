@@ -5,17 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.helpdesk.constant.ApiUrl;
 import com.project.helpdesk.constant.ResponseMessage;
 import com.project.helpdesk.dto.request.NewComplaintRequest;
+import com.project.helpdesk.dto.request.SearchComplaintRequest;
 import com.project.helpdesk.dto.request.UpdateComplaintRequest;
 import com.project.helpdesk.dto.response.CommonResponse;
 import com.project.helpdesk.dto.response.ComplaintDtoResponse;
+import com.project.helpdesk.dto.response.GetComplaintDtoResponse;
+import com.project.helpdesk.dto.response.PagingResponse;
 import com.project.helpdesk.service.ComplaintService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -78,11 +84,45 @@ public class ComplaintController {
 
             return ResponseEntity.status(HttpStatus.OK).body(responseBuilder.build());
         } catch (Exception e) {
-            e.printStackTrace();
             responseBuilder.message(ResponseMessage.ERROR_INTERNAL_SERVER);
             responseBuilder.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBuilder.build());
         }
+    }
+
+     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<GetComplaintDtoResponse>>> getAllCustomer(
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "sortBy", defaultValue = "complaint_date") String sortBy,
+            @RequestParam(name = "direction", defaultValue = "asc") String direction
+    ) {
+        SearchComplaintRequest request = SearchComplaintRequest.builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .direction(direction)
+                .build();
+        Page<GetComplaintDtoResponse> customers = complaintService.getAllComplaints(request);
+
+        PagingResponse pagingResponse = PagingResponse.builder()
+                .totalPages(customers.getTotalPages())
+                .totalElement(customers.getTotalElements())
+                .page(customers.getPageable().getPageNumber() + 1)
+                .size(customers.getPageable().getPageSize())
+                .hasNext(customers.hasNext())
+                .hasPrevious(customers.hasPrevious())
+                .build();
+
+        CommonResponse<List<GetComplaintDtoResponse>> response = CommonResponse.<List<GetComplaintDtoResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(ResponseMessage.SUCCESS_GET_DATA)
+                .data(customers.getContent())
+                .paging(pagingResponse)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

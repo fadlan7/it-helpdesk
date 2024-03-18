@@ -35,7 +35,7 @@ public class ComplaintReplyServiceImpl implements ComplaintReplyService {
 
         Complaint currentComplaint = complaintService.getComplaintById(request.getComplaintId());
 
-        if (!currentComplaint.getStatus().equals(ComplaintStatus.CANCELLED.name())) {
+        if (currentComplaint.getStatus().equals(ComplaintStatus.CANCELLED.name())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ResponseMessage.ERROR_COMPLAINT_CANNOT_BE_CREATED);
         }
 
