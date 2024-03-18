@@ -36,13 +36,13 @@ public class ComplaintController {
 
     )
     public ResponseEntity<CommonResponse<ComplaintDtoResponse>> createNewComplaint(
-            @RequestPart(name = "complaint") String jsonMenu,
+            @RequestPart(name = "complaint") String jsonComplaint,
             @RequestPart(name = "image", required = false) MultipartFile image
     ) {
         CommonResponse.CommonResponseBuilder<ComplaintDtoResponse> responseBuilder = CommonResponse.builder();
 
         try {
-            NewComplaintRequest request = objectMapper.readValue(jsonMenu, new TypeReference<>() {
+            NewComplaintRequest request = objectMapper.readValue(jsonComplaint, new TypeReference<>() {
             });
             request.setComplaintImage(image);
 
@@ -66,13 +66,13 @@ public class ComplaintController {
 
     )
     public ResponseEntity<CommonResponse<?>> updateComplaint(
-            @RequestPart(name = "complaint") String jsonMenu,
+            @RequestPart(name = "complaint") String jsonComplaint,
             @RequestPart(name = "image", required = false) MultipartFile image
     ) {
         CommonResponse.CommonResponseBuilder<ComplaintDtoResponse> responseBuilder = CommonResponse.builder();
 
         try {
-            UpdateComplaintRequest request = objectMapper.readValue(jsonMenu, new TypeReference<>() {
+            UpdateComplaintRequest request = objectMapper.readValue(jsonComplaint, new TypeReference<>() {
             });
             request.setComplaintImage(image);
 
@@ -90,9 +90,9 @@ public class ComplaintController {
         }
     }
 
-     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
     @GetMapping
-    public ResponseEntity<CommonResponse<List<GetComplaintDtoResponse>>> getAllCustomer(
+    public ResponseEntity<CommonResponse<List<GetComplaintDtoResponse>>> getAllComplaint(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "complaint_date") String sortBy,
@@ -104,21 +104,21 @@ public class ComplaintController {
                 .sortBy(sortBy)
                 .direction(direction)
                 .build();
-        Page<GetComplaintDtoResponse> customers = complaintService.getAllComplaints(request);
+        Page<GetComplaintDtoResponse> complaints = complaintService.getAllComplaints(request);
 
         PagingResponse pagingResponse = PagingResponse.builder()
-                .totalPages(customers.getTotalPages())
-                .totalElement(customers.getTotalElements())
-                .page(customers.getPageable().getPageNumber() + 1)
-                .size(customers.getPageable().getPageSize())
-                .hasNext(customers.hasNext())
-                .hasPrevious(customers.hasPrevious())
+                .totalPages(complaints.getTotalPages())
+                .totalElement(complaints.getTotalElements())
+                .page(complaints.getPageable().getPageNumber() + 1)
+                .size(complaints.getPageable().getPageSize())
+                .hasNext(complaints.hasNext())
+                .hasPrevious(complaints.hasPrevious())
                 .build();
 
         CommonResponse<List<GetComplaintDtoResponse>> response = CommonResponse.<List<GetComplaintDtoResponse>>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(ResponseMessage.SUCCESS_GET_DATA)
-                .data(customers.getContent())
+                .data(complaints.getContent())
                 .paging(pagingResponse)
                 .build();
 

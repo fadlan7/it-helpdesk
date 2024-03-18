@@ -1,7 +1,5 @@
 package com.project.helpdesk.repository;
 
-import com.project.helpdesk.dto.request.SearchEmployeeRequest;
-import com.project.helpdesk.dto.response.EmployeeResponse;
 import com.project.helpdesk.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

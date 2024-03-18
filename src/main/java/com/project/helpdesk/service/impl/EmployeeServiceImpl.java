@@ -13,6 +13,7 @@ import com.project.helpdesk.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,13 +45,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Transactional(rollbackFor = Exception.class)
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','TECHNICIAN') OR @authenticateUserServiceImpl.hasSameId(#request)")
     @Override
     public EmployeeResponse updateEmployee(UpdateEmployeeRequest request) {
         findByIdOrThrowNotFound(request.getId());
 
         employeeRepository.updateEmployee(request.getId(), request.getName(), request.getMobilePhone(), request.getDivision());
 
-        return null;
+        return EmployeeResponse.builder()
+                .id(request.getId())
+                .name(request.getName())
+                .mobilePhone(request.getMobilePhone())
+                .division(request.getDivision())
+                .build();
     }
 
     @Override

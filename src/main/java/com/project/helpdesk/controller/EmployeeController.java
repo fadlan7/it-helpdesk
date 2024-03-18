@@ -39,7 +39,7 @@ public class EmployeeController {
     }
 
     @PutMapping
-    public ResponseEntity<CommonResponse<EmployeeResponse>> updateCustomer(@RequestBody UpdateEmployeeRequest request) {
+    public ResponseEntity<CommonResponse<EmployeeResponse>> updateEmployee(@RequestBody UpdateEmployeeRequest request) {
         EmployeeResponse updatedEmployee = employeeService.updateEmployee(request);
 
         CommonResponse<EmployeeResponse> response = CommonResponse.<EmployeeResponse>builder()
@@ -53,14 +53,15 @@ public class EmployeeController {
                 .body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
     @GetMapping(path = "/{id}")
     public ResponseEntity<CommonResponse<Employee>> getEmployeeById(@PathVariable String id) {
-        Employee customer = employeeService.getEmployeeById(id);
+        Employee employee = employeeService.getEmployeeById(id);
 
         CommonResponse<Employee> response = CommonResponse.<Employee>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(ResponseMessage.SUCCESS_GET_DATA)
-                .data(customer)
+                .data(employee)
                 .build();
 
         return ResponseEntity.ok(response);
@@ -68,7 +69,7 @@ public class EmployeeController {
 
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
     @GetMapping
-    public ResponseEntity<CommonResponse<List<GetEmployeeResponse>>> getAllCustomer(
+    public ResponseEntity<CommonResponse<List<GetEmployeeResponse>>> getAllEmployee(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "name") String sortBy,
@@ -80,26 +81,27 @@ public class EmployeeController {
                 .sortBy(sortBy)
                 .direction(direction)
                 .build();
-        Page<GetEmployeeResponse> customers = employeeService.getAllEmployees(request);
+        Page<GetEmployeeResponse> employees = employeeService.getAllEmployees(request);
 
         PagingResponse pagingResponse = PagingResponse.builder()
-                .totalPages(customers.getTotalPages())
-                .totalElement(customers.getTotalElements())
-                .page(customers.getPageable().getPageNumber() + 1)
-                .size(customers.getPageable().getPageSize())
-                .hasNext(customers.hasNext())
-                .hasPrevious(customers.hasPrevious())
+                .totalPages(employees.getTotalPages())
+                .totalElement(employees.getTotalElements())
+                .page(employees.getPageable().getPageNumber() + 1)
+                .size(employees.getPageable().getPageSize())
+                .hasNext(employees.hasNext())
+                .hasPrevious(employees.hasPrevious())
                 .build();
 
         CommonResponse<List<GetEmployeeResponse>> response = CommonResponse.<List<GetEmployeeResponse>>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(ResponseMessage.SUCCESS_GET_DATA)
-                .data(customers.getContent())
+                .data(employees.getContent())
                 .paging(pagingResponse)
                 .build();
 
         return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse<String>> deleteById(@PathVariable String id) {

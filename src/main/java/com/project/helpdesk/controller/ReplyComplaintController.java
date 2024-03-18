@@ -10,6 +10,7 @@ import com.project.helpdesk.service.ComplaintReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReplyComplaintController {
     private final ComplaintReplyService complaintReplyService;
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
     @PostMapping
     public ResponseEntity<CommonResponse<ComplaintReplyDtoResponse>> createNewEmployee(@RequestBody NewComplaintReplyDtoRequest request) {
 
@@ -30,8 +32,9 @@ public class ReplyComplaintController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'TECHNICIAN')")
     @PutMapping
-    public ResponseEntity<CommonResponse<ComplaintReplyDtoResponse>> updateCustomer(@RequestBody UpdateComplaintReplyDtoRequest request) {
+    public ResponseEntity<CommonResponse<ComplaintReplyDtoResponse>> updateComplaintReply(@RequestBody UpdateComplaintReplyDtoRequest request) {
         ComplaintReplyDtoResponse updatedComplaintReply = complaintReplyService.updateComplaintReply(request);
 
         CommonResponse<ComplaintReplyDtoResponse> response = CommonResponse.<ComplaintReplyDtoResponse>builder()

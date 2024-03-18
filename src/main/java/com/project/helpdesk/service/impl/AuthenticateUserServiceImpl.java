@@ -18,10 +18,10 @@ public class AuthenticateUserServiceImpl {
     private final UserAccountService userAccountService;
 
     public boolean hasSameId(UpdateEmployeeRequest request) {
-        Employee currentCustomer = employeeService.getEmployeeById(request.getId());
+        Employee currentUser = employeeService.getEmployeeById(request.getId());
         UserAccount userAccount = userAccountService.getByContext();
 
-        if (!userAccount.getId().equals(currentCustomer.getUserAccount().getId())) {
+        if (!userAccount.getId().equals(currentUser.getUserAccount().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, ResponseMessage.ERROR_FORBIDDEN);
         }
         return true;
