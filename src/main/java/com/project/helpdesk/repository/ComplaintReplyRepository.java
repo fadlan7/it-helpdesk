@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Repository
 public interface ComplaintReplyRepository extends JpaRepository<ComplaintReply, String> {
@@ -25,6 +26,9 @@ public interface ComplaintReplyRepository extends JpaRepository<ComplaintReply, 
     @Modifying
     @Query(value = "DELETE FROM t_complaint_reply WHERE id = :id", nativeQuery = true)
     void deleteComplaintReply(String id);
+
+    @Query(value = "SELECT * FROM t_complaint_reply WHERE id = :id", nativeQuery = true)
+    Optional<ComplaintReply> getComplaintReplyById(String id);
 
 //    @Query(value = "SELECT * FROM t_complaint_reply WHERE complaint_id = :complaintId", nativeQuery = true)
 //    Page<ComplaintReply> getComplaintReplies(String complaintId, Pageable pageable);

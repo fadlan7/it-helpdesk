@@ -104,7 +104,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public void updateComplaintStatus(String id, Integer status) {
+    public void updateComplaintStatusWithPatch(String id, Integer status) {
         findByIdOrThrowNotFound(id);
 
         String complaintStatus = null;
@@ -127,6 +127,11 @@ public class ComplaintServiceImpl implements ComplaintService {
         }
 
         complaintRepository.updateComplaintStatus(id, complaintStatus);
+    }
+
+    @Override
+    public void updateComplaintStatus(String id, String status) {
+        complaintRepository.updateComplaintStatus(id, status);
     }
 
     @Override

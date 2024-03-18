@@ -102,7 +102,7 @@ public class ComplaintController {
     public ResponseEntity<CommonResponse<String>> updateComplaintStatus(
             @PathVariable(name = "id") String id,
             @RequestParam(name = "status") Integer status) {
-        complaintService.updateComplaintStatus(id, status);
+        complaintService.updateComplaintStatusWithPatch(id, status);
 
         CommonResponse<String> response = CommonResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())

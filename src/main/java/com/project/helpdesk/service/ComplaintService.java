@@ -9,9 +9,16 @@ import org.springframework.data.domain.Page;
 
 public interface ComplaintService {
     ComplaintDtoResponse createComplaint(NewComplaintRequest request);
+
     ComplaintDtoResponse updateComplaint(UpdateComplaintRequest request);
+
     void deleteComplaint(String id);
-    void updateComplaintStatus(String id, Integer status);
+
+    void updateComplaintStatusWithPatch(String id, Integer status);
+
+    void updateComplaintStatus(String id, String status);
+
     Complaint getComplaintById(String id);
+
     Page<ComplaintDtoResponse> getAllComplaints(SearchComplaintRequest request);
 }
