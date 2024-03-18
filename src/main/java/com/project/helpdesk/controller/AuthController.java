@@ -7,6 +7,7 @@ import com.project.helpdesk.dto.response.CommonResponse;
 import com.project.helpdesk.dto.response.LoginResponse;
 import com.project.helpdesk.dto.response.RegisterResponse;
 import com.project.helpdesk.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,7 +41,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     @PostMapping(path = "/register-technician",
             consumes = MediaType.APPLICATION_JSON_VALUE,

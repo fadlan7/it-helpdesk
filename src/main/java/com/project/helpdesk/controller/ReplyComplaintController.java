@@ -7,12 +7,14 @@ import com.project.helpdesk.dto.request.UpdateComplaintReplyDtoRequest;
 import com.project.helpdesk.dto.response.CommonResponse;
 import com.project.helpdesk.dto.response.ComplaintReplyDtoResponse;
 import com.project.helpdesk.service.ComplaintReplyService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = ApiUrl.COMPLAINT_URL + "/reply")

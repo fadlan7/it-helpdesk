@@ -11,6 +11,7 @@ import com.project.helpdesk.dto.response.GetEmployeeResponse;
 import com.project.helpdesk.dto.response.PagingResponse;
 import com.project.helpdesk.entity.Employee;
 import com.project.helpdesk.service.EmployeeService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = ApiUrl.EMPLOYEE_URL)
